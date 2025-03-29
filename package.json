@@ -1,14 +1,21 @@
 {
-  "name": "songwriter-app",
+  "name": "cursor-starter",
   "version": "1.0.0",
-  "description": "A web application for creating and managing songs",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
   "scripts": {
-    "frontend": "cd frontend && npm run dev",
-    "backend": "cd backend && uvicorn app.main:app --reload",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
-    "install-all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt"
+    "dev": "npm run dev --workspace=frontend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "cd backend && python3 app/main.py",
+    "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^9.1.2"
   }
-} 
+}
