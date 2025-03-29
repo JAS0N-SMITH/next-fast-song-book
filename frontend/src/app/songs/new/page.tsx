@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { setCurrentSong } from '../../../features/songs/songSlice';
@@ -13,26 +13,11 @@ import SongStructure from '../../../components/SongStructure';
 import LyricsEditor from '../../../components/LyricsEditor';
 import Link from 'next/link';
 
-interface Song {
-  id: string;
-  title: string;
-  key: string;
-  tempo: number;
-  timeSignature: string;
-  chords: string[];
-  structure: string[];
-  lyrics: string;
-  notes: string;
-}
-
-export default function SongDetail({ params }: { params: { id: string } }) {
+export default function NewSong() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { apiCall, updateSong } = useApi();
-  const [isLoading, setIsLoading] = useState(true);
+  const { createSong } = useApi();
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [song, setSong] = useState<Song | null>(null);
   const [title, setTitle] = useState('');
   const [key, setKey] = useState('C');
   const [tempo, setTempo] = useState(120);
@@ -42,53 +27,15 @@ export default function SongDetail({ params }: { params: { id: string } }) {
   const [lyrics, setLyrics] = useState('');
   const [notes, setNotes] = useState('');
 
-  useEffect(() => {
-    const loadSong = async () => {
-      try {
-        const response = await apiCall<Song>(`/api/songs/${params.id}`);
-        if (response.error) {
-          throw new Error(response.error);
-        }
-        if (!response.data) {
-          throw new Error('Song not found');
-        }
-        const songData = response.data;
-        setSong(songData);
-        setTitle(songData.title);
-        setKey(songData.key);
-        setTempo(songData.tempo);
-        setTimeSignature(songData.timeSignature);
-        setChords(songData.chords);
-        setStructure(songData.structure);
-        setLyrics(songData.lyrics);
-        setNotes(songData.notes);
-      } catch (error) {
-        console.error('Failed to load song:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load song');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (params.id) {
-      loadSong();
-    }
-  }, [params.id, apiCall]);
-
   const handleSave = async () => {
     if (!title.trim()) {
       alert('Please enter a title');
       return;
     }
 
-    if (!song) {
-      setError('Song not found');
-      return;
-    }
-
     setIsSaving(true);
     try {
-      const response = await updateSong(song.id, {
+      const response = await createSong({
         title: title.trim(),
         key,
         tempo,
@@ -98,7 +45,7 @@ export default function SongDetail({ params }: { params: { id: string } }) {
         lyrics,
         notes,
       });
-
+      
       if (response.error) {
         throw new Error(response.error);
       }
@@ -107,59 +54,16 @@ export default function SongDetail({ params }: { params: { id: string } }) {
         throw new Error('No data received from server');
       }
 
+      // The response.data is already typed as Song from the useApi hook
       dispatch(setCurrentSong(response.data));
       router.push('/songs');
     } catch (error) {
-      console.error('Failed to update song:', error);
-      alert(error instanceof Error ? error.message : 'Failed to update song. Please try again.');
+      console.error('Failed to create song:', error);
+      alert(error instanceof Error ? error.message : 'Failed to create song. Please try again.');
     } finally {
       setIsSaving(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {[1, 2].map((i) => (
-                <div key={i} className="h-64 bg-gray-200 rounded"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="bg-white rounded-lg shadow-md p-6 border border-red-100">
-            <div className="flex items-center">
-              <svg className="h-6 w-6 text-red-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <h1 className="text-xl font-semibold text-gray-900">Error</h1>
-            </div>
-            <p className="mt-2 text-gray-600">{error}</p>
-            <div className="mt-4">
-              <Link
-                href="/songs"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Back to Songs
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-indigo-50">
@@ -176,7 +80,7 @@ export default function SongDetail({ params }: { params: { id: string } }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </Link>
-              <h1 className="text-2xl font-bold text-white">Edit Song</h1>
+              <h1 className="text-2xl font-bold text-white">Create New Song</h1>
             </div>
             <button
               onClick={handleSave}
@@ -196,7 +100,7 @@ export default function SongDetail({ params }: { params: { id: string } }) {
                   <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
-                  Save Changes
+                  Save Song
                 </>
               )}
             </button>
