@@ -14,28 +14,73 @@ A modern web application for creating and managing songs, featuring music compos
 - **Drag-and-Drop**: dnd-kit
 - **File Storage**: Firebase
 
+# Initial Project Scaffolding
+
+This PR sets up the basic project structure for the Songwriter application, including both frontend and backend components.
+
+## Frontend (Next.js)
+
+### Core Setup
+- Next.js 15.2.4 with TypeScript and Tailwind CSS
+- App Router architecture
+- Basic project structure with organized directories
+- Environment configuration
+
+### Features
+- Responsive layout with sidebar navigation
+- Redux store setup with song slice
+- Basic routing structure
+- API integration setup with axios
+- Type definitions for song data
+
+### Components
+- Layout component with responsive sidebar
+- Basic home page with call-to-action
+- Songs list page with table view
+- Redux provider setup
+
+## Backend (FastAPI)
+
+### Core Setup
+- FastAPI with Python 3.9+
+- PostgreSQL database integration
+- SQLAlchemy ORM setup
+- Environment configuration
+
+### Features
+- Basic API structure with versioning
+- Database models for Songs and Users
+- Pydantic schemas for data validation
+- Basic CRUD endpoints for songs
+- CORS middleware configuration
+
+### Models
+- Base model with common fields
+- Song model with music-specific fields
+- User model for future authentication
+
 ## Project Structure
 
 ```
 songwriter-app/
-├── frontend/                 # Next.js application
-│   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── features/        # Feature-specific components
-│   │   ├── hooks/          # Custom React hooks
-│   │   ├── store/          # Redux store
-│   │   ├── types/          # TypeScript types
-│   │   └── utils/          # Utility functions
-│   └── public/             # Static assets
-├── backend/                 # FastAPI application
-│   ├── app/
-│   │   ├── api/            # API routes
-│   │   ├── core/           # Core functionality
-│   │   ├── models/         # Database models
-│   │   ├── schemas/        # Pydantic schemas
-│   │   └── services/       # Business logic
-│   └── tests/              # Backend tests
-└── shared/                 # Shared types and utilities
+├── frontend/ # Next.js application
+│ ├── src/
+│ │ ├── components/ # Reusable UI components
+│ │ ├── features/ # Feature-specific components
+│ │ ├── hooks/ # Custom React hooks
+│ │ ├── store/ # Redux store
+│ │ ├── types/ # TypeScript types
+│ │ └── utils/ # Utility functions
+│ └── public/ # Static assets
+├── backend/ # FastAPI application
+│ ├── app/
+│ │ ├── api/ # API routes
+│ │ ├── core/ # Core functionality
+│ │ ├── models/ # Database models
+│ │ ├── schemas/ # Pydantic schemas
+│ │ └── services/ # Business logic
+│ └── tests/ # Backend tests
+└── shared/ # Shared types and utilities
 ```
 
 ## Getting Started
@@ -76,6 +121,36 @@ uvicorn app.main:app --reload
 - Frontend runs on: http://localhost:3000
 - Backend runs on: http://localhost:8000
 - API documentation available at: http://localhost:8000/docs
+
+## Development Setup
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Backend
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+## Next Steps
+1. Implement song editor with music composition tools
+2. Add drag-and-drop functionality for song structure
+3. Implement user authentication
+4. Add music playback features
+5. Set up testing infrastructure
+
+## Notes
+- Authentication is temporarily disabled to focus on core features
+- Basic UI components are in place but need styling refinement
+- Database migrations will be added in the next PR
 
 ## Contributing
 
