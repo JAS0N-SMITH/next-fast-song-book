@@ -24,8 +24,12 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
-    <div className={`flex flex-col gap-2 ${width === 'half' ? 'w-1/2' : 'w-full'}`}>
+    <div className={`flex flex-col gap-2 ${width === 'half' ? 'w-40' : 'w-full'}`}>
       {label && (
         <label className="text-sm font-medium text-gray-900 dark:text-dark-text">
           {label}
@@ -37,12 +41,10 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
           onClick={() => setIsOpen(!isOpen)}
           className="appearance-none block w-full px-4 py-2.5 border border-indigo-200 dark:border-dark-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 dark:bg-dark-bg text-gray-900 dark:text-dark-text text-sm transition-colors duration-200 relative"
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-between">
             <span className={`truncate ${value ? 'font-semibold text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'}`}>
-              {value || placeholder}
+              {value ? capitalizeFirstLetter(value) : placeholder}
             </span>
-          </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             <svg 
               className={`h-4 w-4 text-indigo-400 dark:text-indigo-500 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} 
               xmlns="http://www.w3.org/2000/svg" 
@@ -69,7 +71,7 @@ export default function CustomDropdown({ value, onChange, options, placeholder =
                   }}
                 >
                   <span className={`block truncate ${value === option ? 'font-medium text-indigo-600 dark:text-indigo-400' : 'text-gray-900 dark:text-dark-text'}`}>
-                    {option}
+                    {capitalizeFirstLetter(option)}
                   </span>
                   {value === option && (
                     <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 dark:text-indigo-400">

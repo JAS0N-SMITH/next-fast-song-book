@@ -7,6 +7,7 @@ import { RootState } from '../../store';
 import { setCurrentSong } from '../../features/songs/songSlice';
 import { useApi } from '../../hooks/useApi';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import CustomDropdown from '../../components/CustomDropdown';
 
 interface Song {
   id: string;
@@ -202,18 +203,16 @@ export default function SongsList() {
               </div>
             </div>
             <div className="flex gap-4">
-              <select
+              <CustomDropdown
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'title' | 'key' | 'tempo')}
-                className="border border-indigo-200 dark:border-dark-border rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 dark:bg-dark-bg text-gray-900 dark:text-dark-text"
-              >
-                <option value="title">Title</option>
-                <option value="key">Key</option>
-                <option value="tempo">Tempo</option>
-              </select>
+                onChange={(value) => setSortBy(value as 'title' | 'key' | 'tempo')}
+                options={['title', 'key', 'tempo']}
+                placeholder="Sort by..."
+                width="half"
+              />
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="border border-indigo-200 dark:border-dark-border rounded-md px-4 py-2 hover:bg-indigo-50 dark:hover:bg-dark-border focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 dark:bg-dark-bg text-gray-900 dark:text-dark-text transition-colors"
+                className="inline-flex items-center justify-center px-4 py-2 border border-indigo-200 dark:border-dark-border rounded-md hover:bg-indigo-50 dark:hover:bg-dark-border focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 dark:bg-dark-bg text-gray-900 dark:text-dark-text transition-colors"
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </button>
