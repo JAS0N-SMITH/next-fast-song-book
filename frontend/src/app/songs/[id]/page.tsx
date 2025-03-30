@@ -211,7 +211,7 @@ export default function SongDetail({ params }: { params: { id: string } }) {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Title Input */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6 border border-indigo-100">
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-md p-6 mb-6 border border-indigo-100 dark:border-dark-border">
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-dark-text mb-2">
             Song Title
           </label>
